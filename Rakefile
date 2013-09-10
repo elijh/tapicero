@@ -24,7 +24,7 @@ end
 ## GEM BUILDING AND INSTALLING
 ##
 
-$spec_path = 'leap_ca.gemspec'
+$spec_path = 'tapicero.gemspec'
 $spec      = eval(File.read($spec_path))
 $base_dir  = File.dirname(__FILE__)
 $gem_path  = File.join($base_dir, 'pkg', "#{$spec.name}-#{$spec.version}.gem")
