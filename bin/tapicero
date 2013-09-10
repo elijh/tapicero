@@ -1,0 +1,58 @@
+#!/usr/bin/ruby
+
+#
+# Tapicero Daemon
+#
+
+BASE_DIR = File.expand_path('../..', File.symlink?(__FILE__) ? File.readlink(__FILE__) : __FILE__)
+
+begin
+  #
+  # try without rubygems (might be already loaded or not present)
+  #
+  require 'tapicero/version'
+rescue LoadError
+  #
+  # try with rubygems
+  #
+  require "#{BASE_DIR}/lib/tapicero/version.rb"
+  Tapicero::REQUIRE_PATHS.each do |path|
+    path = File.expand_path(path, BASE_DIR)
+    $LOAD_PATH.unshift path unless $LOAD_PATH.include?(path)
+  end
+  require 'rubygems'
+  require 'tapicero/version'
+end
+
+# Graceful Ctrl-C
+Signal.trap("SIGINT") do
+  puts "\nQuit - leaving tapicero"
+  exit
+end
+
+# this changes later, so save the initial current directory
+CWD = Dir.pwd
+
+# handle --version ourselves
+if ARGV.grep(/--version/).any?
+  puts "tapicero #{Tapicero::VERSION}, ruby #{RUBY_VERSION}"
+  exit(0)
+end
+
+# --run-once will create databases for new users and then exit
+if ARGV.grep(/--once/).any? or ARGV.grep(/--run-once/).any?
+  require 'tapicero'
+  # TODO: implement me.
+  exit(0)
+end
+
+#
+# Start the daemon
+#
+require 'daemons'
+if ENV["USER"] == "root"
+  options = {:app_name => 'tapicero', :dir_mode => :system}  # this will put the pid file in /var/run
+else
+  options = {:app_name => 'tapicero', :dir_mode => :normal, :dir => '/tmp'} # this will put the pid file in /tmp
+end
+Daemons.run("#{BASE_DIR}/lib/tapicero_daemon.rb", options)
