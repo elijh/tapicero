@@ -58,7 +58,7 @@ Configuration
 
 ``tapicero`` reads the following configurations files, in this order:
 
-* ``$(tapicero_source)/config/default_config.yaml``
+* ``$(tapicero_source)/config/default.yaml``
 * ``/etc/leap/tapicero.yaml``
 * Any file passed to ARGV like so ``tapicero start -- /etc/tapicero.yaml``
 
