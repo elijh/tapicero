@@ -1,5 +1,3 @@
-require 'yajl/http_stream'
-
 module Tapicero
   class CouchStream
     def initialize(database_url)
@@ -9,7 +7,7 @@ module Tapicero
     def get(path, options)
       url = url_for(path, options)
       # puts url
-      Yajl::HttpStream.get(url, :symbolize_keys => true) do |hash|
+      Tapicero::JsonStream.get(url, :symbolize_keys => true) do |hash|
         yield(hash)
       end
     end

@@ -1,12 +1,6 @@
 require File.expand_path('../../test_helper.rb', __FILE__)
 require 'tapicero/couch_stream'
 
-# we'll mock this
-module Yajl
-  class HttpStream
-  end
-end
-
 class CouchStreamTest < MiniTest::Unit::TestCase
 
   def setup
@@ -18,7 +12,7 @@ class CouchStreamTest < MiniTest::Unit::TestCase
   end
 
   def test_get
-    Yajl::HttpStream.expects(:get).
+    Tapicero::JsonStream.expects(:get).
       with(@url, :symbolize_keys => true).
       yields(stub_hash = stub)
     @stream.get(@path, @options) do |hash|

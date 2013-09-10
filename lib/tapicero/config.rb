@@ -18,7 +18,7 @@ module Tapicero
     def couch_host
       couch_connection[:protocol] + '://' +
         couch_connection[:host] + ':' +
-        couch_connection[:port] + '/'
+        couch_connection[:port].to_s + '/'
     end
 
     private
