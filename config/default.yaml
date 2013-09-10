@@ -13,6 +13,3 @@ couch_connection:
   port: 5984
   username: ~
   password: ~
-  prefix: ""
-  suffix: ""
-  join: "_"
