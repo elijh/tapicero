@@ -1,0 +1,5 @@
+#
+# testing configuration options
+#
+
+db_prefix: "tapicero_test-"
