@@ -18,3 +18,4 @@ Tapicero::Config.load(BASE_DIR, 'config/default.yaml', LEAP_CA_CONFIG, ARGV.grep
 require 'tapicero/json_stream'
 require 'tapicero/couch_stream'
 require 'tapicero/couch_changes'
+require 'tapicero/couch_database_creator'
