@@ -7,6 +7,7 @@ module Tapicero
     attr_accessor :users_db_name
     attr_accessor :db_prefix
     attr_accessor :couch_connection
+    attr_accessor :security
 
     def self.load(base_dir, *configs)
       configs.each do |file_path|

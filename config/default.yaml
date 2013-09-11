@@ -13,3 +13,11 @@ couch_connection:
   port: 5984
   username: ~
   password: ~
+security:
+  admins:
+    names: []
+    roles: []
+  readers:
+    names: 
+      - soledad
+    roles: []

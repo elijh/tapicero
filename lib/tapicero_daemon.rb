@@ -15,7 +15,7 @@ module Tapicero
   creator = CouchDatabaseCreator.new(Config.couch_host)
   users.created do |hash|
     puts "Created user " + hash[:id]
-    creator.create(Config.db_prefix + hash[:id])
+    creator.create(Config.db_prefix + hash[:id], Config.security)
   end
 
   users.listen
