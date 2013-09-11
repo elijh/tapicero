@@ -15,11 +15,15 @@ module Tapicero
       end
     end
 
-    # TODO: enable username and password
-    def couch_host
-      couch_connection[:protocol] + '://' +
-        couch_connection[:host] + ':' +
-        couch_connection[:port].to_s + '/'
+    def couch_host(conf = nil)
+      conf ||= couch_connection
+      userinfo = [conf[:username], conf[:password]].compact.join(':')
+      userinfo += '@' unless userinfo.empty?
+      "#{conf[:protocol]}://#{userinfo}#{conf[:host]}:#{conf[:port]}"
+    end
+
+    def couch_host_without_password
+      couch_host couch_connection.merge({:password => nil})
     end
 
     private

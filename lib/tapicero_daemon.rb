@@ -8,9 +8,9 @@
 require 'tapicero'
 
 module Tapicero
-  puts    " * Observing #{Config.couch_host}"
+  puts    " * Observing #{Config.couch_host_without_password}"
   puts    " * Tracking #{Config.users_db_name}"
-  stream   = CouchStream.new(Config.couch_host + Config.users_db_name)
+  stream   = CouchStream.new(Config.couch_host + '/' + Config.users_db_name)
   users = CouchChanges.new(stream)
   creator = CouchDatabaseCreator.new(Config.couch_host)
   users.created do |hash|
