@@ -8,6 +8,8 @@ module Tapicero
     attr_accessor :db_prefix
     attr_accessor :couch_connection
     attr_accessor :security
+    attr_accessor :seq_file
+    attr_accessor :log_file
 
     def self.load(base_dir, *configs)
       configs.each do |file_path|

@@ -21,3 +21,5 @@ security:
     names: 
       - soledad
     roles: []
+seq_file: "/tmp/tapicero.seq"
+log_file: "/var/log/leap/tapicero.log"

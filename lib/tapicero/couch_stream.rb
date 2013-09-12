@@ -1,3 +1,8 @@
+#
+# UNUSED: we currently use CouchRest's streamer instead. Still keeping this
+#         around because it's a simple alternative that works.
+#
+
 module Tapicero
   class CouchStream
     def initialize(database_url)
