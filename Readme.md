@@ -96,8 +96,3 @@ the deamon wrapper. You can do this like this:
 
     ruby -I lib lib/tapicero.rb
 
-
-Todo
-----------------------------
-
-* Remove deprecated 'yajl/http_stream'
