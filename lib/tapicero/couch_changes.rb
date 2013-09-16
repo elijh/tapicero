@@ -9,13 +9,7 @@ module Tapicero
     def initialize(db, seq_filename)
       @db = db
       @seq_filename = seq_filename
-      FileUtils.touch(seq_filename)
-      unless File.writable?(seq_filename)
-        raise StandardError.new("Can't access sequence file")
-      end
-      @since = File.read(seq_filename)
-    rescue Errno::ENOENT => e
-      puts "No sequence file found. Starting from scratch"
+      read_seq(seq_filename)
     end
 
     def created(hash = {}, &block)
@@ -47,6 +41,16 @@ module Tapicero
       created(hash) if changes[0]["rev"].start_with?('1-')
       store_seq(hash["seq"])
       #updated callback
+    end
+
+    def read_seq(seq_filename)
+      FileUtils.touch(seq_filename)
+      unless File.writable?(seq_filename)
+        raise StandardError.new("Can't access sequence file")
+      end
+      @since = File.read(seq_filename)
+    rescue Errno::ENOENT => e
+      puts "No sequence file found. Starting from scratch"
     end
 
     def store_seq(seq)
