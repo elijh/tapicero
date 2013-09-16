@@ -2,17 +2,21 @@
 # Default configuration options for Tapicero
 #
 
-#
-# Database
-#
+# database to observe for changes:
 users_db_name: "users"
+
+# prefix for per user databases:
 db_prefix: "user-"
+
+# couch connection configuration
 couch_connection:
   protocol: "http"
   host: "localhost"
   port: 5984
   username: ~
   password: ~
+
+# security settings to be used for the per user databases
 security:
   admins:
     names: []
@@ -21,5 +25,10 @@ security:
     names: 
       - soledad
     roles: []
-seq_file: "/tmp/tapicero.seq"
-log_file: "/var/log/leap/tapicero.log"
+
+# file to store the last processed user record in so we can resume after
+# a restart:
+seq_file: "/var/log/leap/tapicero.seq"
+
+# log file - Once we use a logger rather than writing to stdout we'll use this:
+# log_file: "/var/log/leap/tapicero.log"

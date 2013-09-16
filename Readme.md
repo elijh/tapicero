@@ -64,20 +64,7 @@ Configuration
 
 For development on a couch with admin party you can probably leave all other options at their default values. For production you will need to set the credentials to an admin user so tapicero can create databases.
 
-The default options are:
-
-    # Database
-    #
-    users_db_name: "users"
-    db_prefix: "user-"
-    couch_connection:
-      protocol: "http"
-      host: "localhost"
-      port: 5984
-      username: ~
-      password: ~
-      prefix: ""
-      suffix: ""
+The default options and some explaination can be found in config/defaults.yaml
 
 Rake Tasks
 ----------------------------
