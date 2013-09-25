@@ -19,8 +19,8 @@ module Tapicero
     def secure(security)
       # let's not overwrite if we have a security doc already
       return if secured?
-      puts security.to_json
-      puts "-> #{security_url}"
+      Tapicero.logger.info "Writing Security to #{security_url}"
+      Tapicero.logger.debug security.to_json
       CouchRest.put security_url, security
     end
 

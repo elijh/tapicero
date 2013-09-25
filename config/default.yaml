@@ -30,5 +30,6 @@ security:
 # a restart:
 seq_file: "/var/log/leap/tapicero.seq"
 
-# log file - Once we use a logger rather than writing to stdout we'll use this:
-# log_file: "/var/log/leap/tapicero.log"
+# Log to this file instead of syslog:
+# log_file: "/var/leap/log/tapicero.log"
+log_level: info

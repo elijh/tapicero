@@ -10,11 +10,15 @@ module Tapicero
     attr_accessor :security
     attr_accessor :seq_file
     attr_accessor :log_file
+    attr_accessor :log_level
 
     def self.load(base_dir, *configs)
-      configs.each do |file_path|
-        load_config find_file(base_dir, file_path)
+      loaded = configs.collect do |file_path|
+        file = find_file(base_dir, file_path)
+        load_config(file)
       end
+      init_logger
+      log_loaded_configs(loaded.compact)
     end
 
     def couch_host(conf = nil)
@@ -30,12 +34,25 @@ module Tapicero
 
     private
 
+    def init_logger
+      if log_file
+        require 'logger'
+        Tapicero.logger = Logger.new(log_file)
+      else
+        require 'syslog/logger'
+        Tapicero.logger = Syslog::Logger.new('tapicero')
+      end
+      Tapicero.logger.level = Logger.const_get(log_level.upcase)
+    end
+
     def load_config(file_path)
       return unless file_path
-      puts " * Loading configuration #{file_path}"
       load_settings YAML.load(File.read(file_path))
+      return file_path
     rescue NoMethodError => exc
-      STDERR.puts "ERROR in file #{file_path}"
+      init_logger
+      Tapicero.logger.fatal "Error in file #{file_path}"
+      Tapicero.logger.fatal exc
       exit(1)
     end
 
@@ -71,6 +88,12 @@ module Tapicero
       end
       return File.expand_path(file_path, base_dir) if File.exists?(File.expand_path(file_path, base_dir))
       return nil
+    end
+
+    def log_loaded_configs(files)
+      files.each do |file|
+        Tapicero.logger.info "Loaded config from #{file} ."
+      end
     end
   end
 end

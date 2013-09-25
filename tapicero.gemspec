@@ -21,6 +21,7 @@ Gem::Specification.new do |s|
   s.add_dependency "couchrest", "~> 1.1.3"
   s.add_dependency "daemons"
   s.add_dependency "yajl-ruby"
+  s.add_dependency "syslog_logger", "~> 2.0.0"
   s.add_development_dependency "minitest", "~> 3.2.0"
   s.add_development_dependency "mocha"
   s.add_development_dependency "rake"
