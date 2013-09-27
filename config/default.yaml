@@ -30,6 +30,6 @@ security:
 # a restart:
 seq_file: "/var/log/leap/tapicero.seq"
 
-# Log to this file instead of syslog:
+# Configure log_file like this if you want to log to a file instead of syslog:
 # log_file: "/var/leap/log/tapicero.log"
 log_level: info
