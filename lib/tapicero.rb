@@ -5,6 +5,13 @@ unless defined? LEAP_CA_CONFIG
   LEAP_CA_CONFIG = '/etc/leap/tapicero.yaml'
 end
 
+module Tapicero
+  class <<self
+    attr_accessor :logger
+  end
+end
+
+
 #
 # Load Config
 # this must come first, because CouchRest needs the connection defined before the models are defined.

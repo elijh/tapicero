@@ -21,8 +21,8 @@ module Tapicero
     end
 
     def listen
-      puts "listening..."
-      puts "Starting at sequence #{since}"
+      Tapicero.logger.info "listening..."
+      Tapicero.logger.debug "Starting at sequence #{since}"
       db.changes :feed => :continuous, :since => since, :heartbeat => 1000 do |hash|
         callbacks(hash)
       end
@@ -44,13 +44,14 @@ module Tapicero
     end
 
     def read_seq(seq_filename)
+      Tapicero.logger.debug "Looking up sequence here: #{seq_filename}"
       FileUtils.touch(seq_filename)
       unless File.writable?(seq_filename)
         raise StandardError.new("Can't access sequence file")
       end
       @since = File.read(seq_filename)
     rescue Errno::ENOENT => e
-      puts "No sequence file found. Starting from scratch"
+      Tapicero.logger.warn "No sequence file found. Starting from scratch"
     end
 
     def store_seq(seq)
@@ -62,7 +63,7 @@ module Tapicero
     #
     def fetch_last_seq
       hash = db.changes :limit => 1, :descending => true
-      puts "starting at seq: " + hash["last_seq"]
+      Tapicero.logger.info "starting at seq: " + hash["last_seq"]
       return hash["last_seq"]
     end
 
