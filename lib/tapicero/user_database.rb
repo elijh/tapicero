@@ -24,6 +24,11 @@ module Tapicero
       CouchRest.put security_url, security
     end
 
+    def destroy
+      db = CouchRest.new(host).database(name)
+      db.delete! if db
+    end
+
     protected
 
     def secured?
