@@ -33,6 +33,7 @@ module Tapicero
       Tapicero.logger.debug "Starting at sequence #{since}"
       db.changes :feed => :continuous, :since => since, :heartbeat => 1000 do |hash|
         callbacks(hash)
+        store_seq(hash["seq"])
       end
     end
 
@@ -44,10 +45,9 @@ module Tapicero
 
     def callbacks(hash)
       #changed callback
-      return deleted(hash) if hash["deleted"]
       return unless changes = hash["changes"]
+      return deleted(hash) if hash["deleted"]
       created(hash) if changes[0]["rev"].start_with?('1-')
-      store_seq(hash["seq"])
       #updated callback
     end
 
@@ -57,7 +57,8 @@ module Tapicero
       unless File.writable?(seq_filename)
         raise StandardError.new("Can't access sequence file")
       end
-      @since = File.read(seq_filename)
+      @since = File.read(seq_filename).to_i
+      puts @since
     rescue Errno::ENOENT => e
       Tapicero.logger.warn "No sequence file found. Starting from scratch"
     end
