@@ -20,6 +20,14 @@ module Tapicero
       end
     end
 
+    def deleted(hash = {}, &block)
+      if block_given?
+        @deleted = block
+      else
+        @deleted && @deleted.call(hash)
+      end
+    end
+
     def listen
       Tapicero.logger.info "listening..."
       Tapicero.logger.debug "Starting at sequence #{since}"
@@ -36,7 +44,7 @@ module Tapicero
 
     def callbacks(hash)
       #changed callback
-      return if hash["deleted"] # deleted_callback
+      return deleted(hash) if hash["deleted"]
       return unless changes = hash["changes"]
       created(hash) if changes[0]["rev"].start_with?('1-')
       store_seq(hash["seq"])

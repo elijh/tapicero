@@ -21,5 +21,9 @@ module Tapicero
     db.secure(Config.security)
   end
 
+  users.deleted do |hash|
+    Tapicero.logger.debug "Deleted user " + hash.to_json
+  end
+
   users.listen
 end
