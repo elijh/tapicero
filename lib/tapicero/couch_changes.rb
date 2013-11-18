@@ -58,7 +58,7 @@ module Tapicero
         raise StandardError.new("Can't access sequence file")
       end
       @since = File.read(seq_filename).to_i
-      puts @since
+      Tapicero.logger.debug "Found sequence: #{@since}"
     rescue Errno::ENOENT => e
       Tapicero.logger.warn "No sequence file found. Starting from scratch"
     end

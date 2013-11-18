@@ -22,7 +22,7 @@ module Tapicero
   end
 
   users.deleted do |hash|
-    puts "Deleted user " + hash['id']
+    Tapicero.logger.debug "Deleted user " + hash['id']
     db = UserDatabase.new(Config.couch_host, Config.db_prefix + hash['id'])
     db.destroy
   end
