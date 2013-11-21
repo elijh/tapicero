@@ -21,7 +21,7 @@ security:
   admins:
     names: []
     roles: []
-  readers:
+  members:
     names: 
       - soledad
     roles: []
