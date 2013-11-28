@@ -31,10 +31,12 @@ module Tapicero
     def listen
       Tapicero.logger.info "listening..."
       Tapicero.logger.debug "Starting at sequence #{since}"
-      db.changes :feed => :continuous, :since => since, :heartbeat => 1000 do |hash|
+      result = db.changes :feed => :continuous, :since => since, :heartbeat => 1000 do |hash|
         callbacks(hash)
         store_seq(hash["seq"])
       end
+      Tapicero.logger.info "couch stream ended unexpectedly."
+      Tapicero.logger.debug result.inspect
     end
 
     protected
@@ -59,14 +61,19 @@ module Tapicero
       unless File.writable?(seq_filename)
         raise StandardError.new("Can't access sequence file")
       end
-      @since = File.read(seq_filename).to_i
-      Tapicero.logger.debug "Found sequence: #{@since}"
+      @since = File.read(seq_filename)
+      if @since == ''
+        @since = nil
+        Tapicero.logger.debug "Found no sequence in the file."
+      else
+        Tapicero.logger.debug "Found sequence: #{@since}"
+      end
     rescue Errno::ENOENT => e
       Tapicero.logger.warn "No sequence file found. Starting from scratch"
     end
 
     def store_seq(seq)
-      File.write(@seq_filename, seq)
+      File.write(@seq_filename, seq.to_json)
     end
 
     #
