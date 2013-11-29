@@ -10,10 +10,9 @@ module Tapicero
     end
 
     def create
-      begin
-        CouchRest.new(host).create_db(name)
-      rescue RestClient::PreconditionFailed  # database already existed
-      end
+      CouchRest.new(host).create_db(name)
+      Tapicero.logger.debug "database created successfully."
+    rescue RestClient::PreconditionFailed  # database already existed
     end
 
     def secure(security)
@@ -27,6 +26,8 @@ module Tapicero
     def destroy
       db = CouchRest.new(host).database(name)
       db.delete! if db
+      Tapicero.logger.debug "database deleted successfully."
+    rescue RestClient::ResourceNotFound  # no database found
     end
 
     protected
