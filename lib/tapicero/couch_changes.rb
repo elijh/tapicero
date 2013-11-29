@@ -45,6 +45,8 @@ module Tapicero
 
     def callbacks(hash)
       #changed callback
+      # let's not track design document changes
+      return if hash['id'].start_with? '_design/'
       return unless changes = hash["changes"]
       return deleted(hash) if hash["deleted"]
       created(hash) if changes[0]["rev"].start_with?('1-')
