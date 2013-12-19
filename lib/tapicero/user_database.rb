@@ -23,6 +23,21 @@ module Tapicero
       CouchRest.put security_url, security
     end
 
+    def add_design_docs
+      pattern = BASE_DIR + 'designs' + '*.json'
+      Tapicero.logger.debug "looking for design docs in #{pattern}"
+      Pathname.glob(pattern).each do |file|
+        upload_design_doc(file)
+      end
+    end
+
+    def upload_design_doc(file)
+      url = design_url(file.basename)
+      Tapicero.logger.debug "uploading design doc #{file.basename} to #{url}"
+      CouchRest.put url, JSON.parse(file.read)
+    end
+
+
     def destroy
       db = CouchRest.new(host).database(name)
       db.delete! if db
@@ -38,6 +53,10 @@ module Tapicero
 
     def security_url
       "#{host}/#{name}/_security"
+    end
+
+    def design_url(doc_name)
+      "#{host}/#{name}/_design/#{doc_name}"
     end
 
     attr_reader :host, :name

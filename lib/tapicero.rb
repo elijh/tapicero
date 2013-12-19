@@ -1,5 +1,5 @@
 unless defined? BASE_DIR
-  BASE_DIR = File.expand_path('../..', __FILE__)
+  BASE_DIR = Pathname.new(__FILE__) + '../..'
 end
 unless defined? TAPICERO_CONFIG
   TAPICERO_CONFIG = '/etc/leap/tapicero.yaml'

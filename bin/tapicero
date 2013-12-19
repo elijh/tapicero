@@ -1,10 +1,11 @@
 #!/usr/bin/ruby
 
+require 'pathname'
 #
 # Tapicero Daemon
 #
 
-BASE_DIR = File.expand_path('../..', File.symlink?(__FILE__) ? File.readlink(__FILE__) : __FILE__)
+BASE_DIR = Pathname.new(__FILE__).realpath + '../..'
 
 begin
   #
@@ -17,7 +18,7 @@ rescue LoadError
   #
   require "#{BASE_DIR}/lib/tapicero/version.rb"
   Tapicero::REQUIRE_PATHS.each do |path|
-    path = File.expand_path(path, BASE_DIR)
+    path = BASE_DIR + path
     $LOAD_PATH.unshift path unless $LOAD_PATH.include?(path)
   end
   require 'rubygems'
