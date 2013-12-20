@@ -33,8 +33,9 @@ module Tapicero
 
     def upload_design_doc(file)
       url = design_url(file.basename('.json'))
-      Tapicero.logger.debug "uploading design doc #{file.basename} to #{url}"
       CouchRest.put url, JSON.parse(file.read)
+      Tapicero.logger.debug "uploaded design doc #{file.basename} to #{url}"
+    rescue RestClient::Conflict
     end
 
 
