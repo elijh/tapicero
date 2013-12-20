@@ -32,7 +32,7 @@ module Tapicero
     end
 
     def upload_design_doc(file)
-      url = design_url(file.basename)
+      url = design_url(file.basename('.json'))
       Tapicero.logger.debug "uploading design doc #{file.basename} to #{url}"
       CouchRest.put url, JSON.parse(file.read)
     end
