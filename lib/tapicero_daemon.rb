@@ -15,6 +15,7 @@ module Tapicero
     db = user_database(hash['id'])
     db.create
     db.secure(config.options[:security])
+    db.add_design_docs
   end
 
   users.deleted do |hash|
