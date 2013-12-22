@@ -41,11 +41,18 @@ if ARGV.grep(/--version/).any?
   exit(0)
 end
 
-# --run-once will create databases for new users and then exit
-if ARGV.grep(/--once/).any? or ARGV.grep(/--run-once/).any?
-  require 'tapicero'
-  # TODO: implement me.
-  exit(0)
+# --run-once            create databases for new users and then exit
+# --rerun               also act upon users that have already been processed
+# --overwrite-security  overwrite existing couch security settings
+# TODO: not implemented yet:
+# --overwrite-designs   overwrite existing design documents
+Tapicero::FLAGS.concat ARGV.grep(/--.*/)
+
+# if flags have been set but an action is missing we assume
+# tapicero should run in foreground.
+if ARGV.first.start_with?('--')
+  ARGV.unshift '--'
+  ARGV.unshift 'run'
 end
 
 #

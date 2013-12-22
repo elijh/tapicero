@@ -34,23 +34,36 @@ From gem:
 Running
 --------------------
 
-Run once:
-
-    tapicero --run-once
-    This will create per user databases for all users created since
-    the last run.
-
 Run in foreground to see if it works:
 
     tapicero run -- test/config/config.yaml
-    browse to http://localhost:5984/_utils
+    create a new record in the users database
+    observe /var/log/syslog or the logfile you specified
 
-How you would run normally in production mode:
+Run as a deamon:
 
     tapicero start
     tapicero stop
 
-See ``tapicero --help`` for more options.
+Run once and then exit:
+
+    tapicero --run-once
+    This will create per user databases for all users created since
+    the last run and then exit.
+
+Flags
+---------------------
+
+--run-once:
+  process the existing users and then exit
+
+--rerun:
+  also work on users that have been processed before
+
+--overwrite-security:
+  write the security settings even if the user database already has some
+
+Combining these flags you can migrate the security settings of all existing per user databases.
 
 
 Configuration

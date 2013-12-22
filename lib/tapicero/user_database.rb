@@ -17,7 +17,7 @@ module Tapicero
 
     def secure(security)
       # let's not overwrite if we have a security doc already
-      return if secured?
+      return if secured? && !Tapicero::FLAGS.include?('--overwrite-security')
       Tapicero.logger.info "Writing Security to #{security_url}"
       Tapicero.logger.debug security.to_json
       CouchRest.put security_url, security

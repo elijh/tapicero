@@ -1,4 +1,5 @@
 module Tapicero
-  VERSION = "0.3.0"
+  VERSION = "0.3.1"
   REQUIRE_PATHS = ['lib']
+  FLAGS = []
 end
