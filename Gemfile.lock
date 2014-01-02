@@ -6,7 +6,7 @@ PATH
       couchrest_changes (~> 0.0.4)
       daemons
       syslog_logger (~> 2.0.0)
-      yajl-ruby
+      yajl-ruby (~> 1.1.0)
 
 GEM
   remote: http://rubygems.org/
