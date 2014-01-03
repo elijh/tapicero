@@ -16,6 +16,7 @@ module Tapicero
     db.create
     db.secure(config.options[:security])
     db.add_design_docs
+    logger.info "Prepared storage for " + hash['id']
   end
 
   users.deleted do |hash|

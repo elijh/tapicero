@@ -18,18 +18,17 @@ module Tapicero
     def secure(security)
       # let's not overwrite if we have a security doc already
       return if secured? && !Tapicero::FLAGS.include?('--overwrite-security')
-      Tapicero.logger.info "Writing Security to #{security_url}"
-      Tapicero.logger.debug security.to_json
-      retry_request_once "Writing security" do
+      retry_request_once "Writing security to" do
+        Tapicero.logger.debug security.to_json
         CouchRest.put security_url, security
       end
     end
 
     def add_design_docs
       pattern = BASE_DIR + 'designs' + '*.json'
-      Tapicero.logger.debug "looking for design docs in #{pattern}"
+      Tapicero.logger.debug "Looking for design docs in #{pattern}"
       Pathname.glob(pattern).each do |file|
-        retry_request_once "Uploading design doc" do
+        retry_request_once "Uploading design doc to" do
           upload_design_doc(file)
         end
       end
@@ -38,13 +37,12 @@ module Tapicero
     def upload_design_doc(file)
       url = design_url(file.basename('.json'))
       CouchRest.put url, JSON.parse(file.read)
-      Tapicero.logger.debug "uploaded design doc #{file.basename} to #{url}"
     rescue RestClient::Conflict
     end
 
 
     def destroy
-      retry_request_once "Deleting Database" do
+      retry_request_once "Deleting database" do
         delete_db
       end
     end
@@ -53,25 +51,24 @@ module Tapicero
 
     def create_db
       CouchRest.new(host).create_db(name)
-      Tapicero.logger.debug "database created successfully."
     rescue RestClient::PreconditionFailed  # database already existed
     end
 
     def delete_db
       db = CouchRest.new(host).database(name)
       db.delete! if db
-      Tapicero.logger.debug "database deleted successfully."
     rescue RestClient::ResourceNotFound  # no database found
     end
 
     def retry_request_once(action)
       second_try ||= false
+      Tapicero.logger.debug "#{action} #{name}"
       yield
     rescue RestClient::Exception => exc
       if second_try
-        log_error action + " failed twice due to:", exc
+        log_error "#{action} #{name} failed twice due to:", exc
       else
-        log_error action + " failed due to:", exc
+        log_error "#{action} #{name} failed due to:", exc
         sleep 5
         second_try = true
         retry
@@ -80,12 +77,12 @@ module Tapicero
 
     def log_error(message, exc)
       Tapicero.logger.warn message if message
-      Tapicero.logger.warn exc.to_s
+      Tapicero.logger.warn exc.class.name + ': ' + exc.to_s
       Tapicero.logger.debug exc.backtrace.join("\n")
     end
 
     def secured?
-      retry_request_once "Checking security" do
+      retry_request_once "Checking security of" do
         CouchRest.get(security_url).keys.any?
       end
     end

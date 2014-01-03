@@ -68,8 +68,9 @@ else
 end
 begin
   Daemons.run("#{BASE_DIR}/lib/tapicero_daemon.rb", options)
+rescue SystemExit
 rescue Exception => exc
   Tapicero.logger.error "Uncaught exception. Daemon will die."
-  Tapicero.logger.error exc.to_s
+  Tapicero.logger.error exc.class.name + ": " + exc.to_s
   Tapicero.logger.error exc.backtrace.join("\n")
 end
