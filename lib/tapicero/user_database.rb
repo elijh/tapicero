@@ -67,20 +67,21 @@ module Tapicero
     def retry_request_once(action)
       second_try ||= false
       yield
-    rescue RestClient::Exception => e
+    rescue RestClient::Exception => exc
       if second_try
-        log_error action + " failed twice due to:", e
+        log_error action + " failed twice due to:", exc
       else
-        log_error action + " failed due to:", e
+        log_error action + " failed due to:", exc
+        sleep 5
         second_try = true
         retry
       end
     end
 
-    def log_error(message, e)
+    def log_error(message, exc)
       Tapicero.logger.warn message if message
-      Tapicero.logger.warn e.to_s
-      Tapicero.logger.debug e.backtrace
+      Tapicero.logger.warn exc.to_s
+      Tapicero.logger.debug exc.backtrace.join("\n")
     end
 
     def secured?
