@@ -55,13 +55,21 @@ if ARGV.first.start_with?('--')
   ARGV.unshift 'run'
 end
 
+
 #
 # Start the daemon
 #
+require 'tapicero' # so we can use Tapicero.logger below.
 require 'daemons'
 if ENV["USER"] == "root"
   options = {:app_name => 'tapicero', :dir_mode => :system}  # this will put the pid file in /var/run
 else
   options = {:app_name => 'tapicero', :dir_mode => :normal, :dir => '/tmp'} # this will put the pid file in /tmp
 end
-Daemons.run("#{BASE_DIR}/lib/tapicero_daemon.rb", options)
+begin
+  Daemons.run("#{BASE_DIR}/lib/tapicero_daemon.rb", options)
+rescue Exception => exc
+  Tapicero.logger.error "TAPICERO DYING XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+  Tapicero.logger.error exc.to_s
+  Tapicero.logger.error exc.backtrace
+end
