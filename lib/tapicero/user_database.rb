@@ -10,9 +10,9 @@ module Tapicero
     end
 
     def create
-      CouchRest.new(host).create_db(name)
-      Tapicero.logger.debug "database created successfully."
-    rescue RestClient::PreconditionFailed  # database already existed
+      retry_request_once "Creating database" do
+        create_db
+      end
     end
 
     def secure(security)
@@ -20,14 +20,18 @@ module Tapicero
       return if secured? && !Tapicero::FLAGS.include?('--overwrite-security')
       Tapicero.logger.info "Writing Security to #{security_url}"
       Tapicero.logger.debug security.to_json
-      CouchRest.put security_url, security
+      retry_request_once "Writing security" do
+        CouchRest.put security_url, security
+      end
     end
 
     def add_design_docs
       pattern = BASE_DIR + 'designs' + '*.json'
       Tapicero.logger.debug "looking for design docs in #{pattern}"
       Pathname.glob(pattern).each do |file|
-        upload_design_doc(file)
+        retry_request_once "Uploading design doc" do
+          upload_design_doc(file)
+        end
       end
     end
 
@@ -40,16 +44,49 @@ module Tapicero
 
 
     def destroy
+      retry_request_once "Deleting Database" do
+        delete_db
+      end
+    end
+
+    protected
+
+    def create_db
+      CouchRest.new(host).create_db(name)
+      Tapicero.logger.debug "database created successfully."
+    rescue RestClient::PreconditionFailed  # database already existed
+    end
+
+    def delete_db
       db = CouchRest.new(host).database(name)
       db.delete! if db
       Tapicero.logger.debug "database deleted successfully."
     rescue RestClient::ResourceNotFound  # no database found
     end
 
-    protected
+    def retry_request_once(action)
+      second_try ||= false
+      yield
+    rescue RestClient::Exception => e
+      if second_try
+        log_error action + " failed twice due to:", e
+      else
+        log_error action + " failed due to:", e
+        second_try = true
+        retry
+      end
+    end
+
+    def log_error(message, e)
+      Tapicero.logger.warn message if message
+      Tapicero.logger.warn e.to_s
+      Tapicero.logger.debug e.backtrace
+    end
 
     def secured?
-      CouchRest.get(security_url).keys.any?
+      retry_request_once "Checking security" do
+        CouchRest.get(security_url).keys.any?
+      end
     end
 
     def security_url
