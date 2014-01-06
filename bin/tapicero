@@ -1,10 +1,10 @@
-#!/usr/bin/ruby
+#!/usr/bin/env ruby
 
-require 'pathname'
 #
 # Tapicero Daemon
 #
 
+require 'pathname'
 BASE_DIR = Pathname.new(__FILE__).realpath + '../..'
 
 begin

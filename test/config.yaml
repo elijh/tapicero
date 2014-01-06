@@ -9,7 +9,7 @@ connection:
   port: 5984
   username: anna
   password: secret
-  prefix: "test"
+  prefix: "tapicero-test"
   suffix: ""
 
 # file to store the last processed user record in so we can resume after
