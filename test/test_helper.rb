@@ -6,5 +6,5 @@ $:.unshift File.expand_path('lib', BASE_DIR)
 
 require 'mocha/setup'
 
-TAPICERO_CONFIG = "test/config/config.yaml"
+TAPICERO_CONFIG = "test/config.yaml"
 require 'tapicero'
