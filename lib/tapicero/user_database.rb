@@ -9,6 +9,13 @@ module Tapicero
       @name = name
     end
 
+    def prepare(config)
+      db.create
+      db.secure(config.options[:security])
+      db.add_design_docs
+      logger.info "Prepared storage " + name
+    end
+
     def create
       retry_request_once "Creating database" do
         create_db

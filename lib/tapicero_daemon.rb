@@ -12,17 +12,21 @@ module Tapicero
 
   users.created do |hash|
     logger.debug "Created user " + hash['id']
-    db = user_database(hash['id'])
-    db.create
-    db.secure(config.options[:security])
-    db.add_design_docs
-    logger.info "Prepared storage for " + hash['id']
+    user_database(hash['id']).prepare(config)
+  end
+
+  # Sometimes changes log starts with rev 2. So the
+  # detection of is currently not working properly
+  # Working around this until a new version of
+  # couchrest changes takes this into account.
+  users.updated do |hash|
+    logger.debug "Updated user " + hash['id']
+    user_database(hash['id']).prepare(config)
   end
 
   users.deleted do |hash|
     logger.debug "Deleted user " + hash['id']
-    db = user_database(hash['id'])
-    db.destroy
+    user_database(hash['id']).destroy
   end
 
   users.listen
