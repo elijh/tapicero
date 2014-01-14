@@ -10,9 +10,9 @@ module Tapicero
     end
 
     def prepare(config)
-      db.create
-      db.secure(config.options[:security])
-      db.add_design_docs
+      create
+      secure(config.options[:security])
+      add_design_docs
       logger.info "Prepared storage " + name
     end
 
