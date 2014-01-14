@@ -13,7 +13,7 @@ module Tapicero
       create
       secure(config.options[:security])
       add_design_docs
-      logger.info "Prepared storage " + name
+      Tapicero.logger.info "Prepared storage " + name
     end
 
     def create
