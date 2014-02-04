@@ -8,7 +8,11 @@ module Tapicero
     attr_accessor :config
   end
 
-
+  # reraise exceptions instead of retrying
+  # used in tests
+  unless defined? RERAISE
+    RERAISE = false
+  end
   #
   # Load Config
   # this must come first, because CouchRest needs the connection
@@ -24,12 +28,4 @@ module Tapicero
     puts "flags: #{FLAGS}" if FLAGS.any?
   end
 
-  #
-  # Load Tapicero Parts
-  #
-  require 'tapicero/user_database'
-
-  def self.user_database(id)
-    UserDatabase.new(config.couch_host, config.options[:db_prefix] + id)
-  end
 end

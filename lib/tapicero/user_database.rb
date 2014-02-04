@@ -4,16 +4,8 @@ require 'json'
 module Tapicero
   class UserDatabase
 
-    def initialize(host, name)
-      @host = host
-      @name = name
-    end
-
-    def prepare(config)
-      create
-      secure(config.options[:security])
-      add_design_docs
-      Tapicero.logger.info "Prepared storage " + name
+    def initialize(user_id)
+      @db = couch.database(config.options[:db_prefix] + user_id)
     end
 
     def create
@@ -22,7 +14,8 @@ module Tapicero
       end
     end
 
-    def secure(security)
+    def secure(security = nil)
+      security ||= config.options[:security]
       # let's not overwrite if we have a security doc already
       return if secured? && !Tapicero::FLAGS.include?('--overwrite-security')
       retry_request_once "Writing security to" do
@@ -42,9 +35,9 @@ module Tapicero
     end
 
     def upload_design_doc(file)
-      url = design_url(file.basename('.json'))
-      CouchRest.put url, JSON.parse(file.read)
-    rescue RestClient::Conflict
+      old = CouchRest.get design_url(file.basename('.json'))
+    rescue RestClient::ResourceNotFound
+      CouchRest.put design_url(file.basename('.json')), JSON.parse(file.read)
     end
 
 
@@ -54,28 +47,33 @@ module Tapicero
       end
     end
 
+    def name
+      db.name
+    end
+
     protected
 
     def create_db
-      CouchRest.new(host).create_db(name)
-    rescue RestClient::PreconditionFailed  # database already existed
+      db.info # test if db exists
+    rescue RestClient::ResourceNotFound
+      couch.create_db(db.name)
     end
 
     def delete_db
-      db = CouchRest.new(host).database(name)
       db.delete! if db
     rescue RestClient::ResourceNotFound  # no database found
     end
 
     def retry_request_once(action)
       second_try ||= false
-      Tapicero.logger.debug "#{action} #{name}"
+      Tapicero.logger.debug "#{action} #{db.name}"
       yield
     rescue RestClient::Exception => exc
+      raise exc if Tapicero::RERAISE
       if second_try
-        log_error "#{action} #{name} failed twice due to:", exc
+        log_error "#{action} #{db.name} failed twice due to:", exc
       else
-        log_error "#{action} #{name} failed due to:", exc
+        log_error "#{action} #{db.name} failed due to:", exc
         sleep 5
         second_try = true
         retry
@@ -95,13 +93,22 @@ module Tapicero
     end
 
     def security_url
-      "#{host}/#{name}/_security"
+      db.root + "/_security"
     end
 
     def design_url(doc_name)
-      "#{host}/#{name}/_design/#{doc_name}"
+      db.root + "/_design/#{doc_name}"
     end
 
-    attr_reader :host, :name
+    attr_reader :db
+
+    def couch
+      @couch ||= CouchRest.new(config.couch_host)
+    end
+
+    def config
+      Tapicero.config
+    end
+
   end
 end
