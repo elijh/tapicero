@@ -3,7 +3,7 @@ require File.expand_path('../../test_helper.rb', __FILE__)
 class TapiceroTest < MiniTest::Unit::TestCase
 
   def test_loads_config
-    assert_equal "tapicero-test", config.connection[:prefix]
+    assert_equal "tapicero_test", config.connection[:prefix]
     assert_equal "debug", config.send(:log_level)
   end
 
@@ -27,7 +27,7 @@ class TapiceroTest < MiniTest::Unit::TestCase
   def test_configures_security
     user_id = create_user['id']
     sleep 1
-    assert_equal config.options[:security], user_database(user_id).get(_security)
+    assert_equal config.options[:security], user_database(user_id).get('_security')
   end
 
   def create_user
