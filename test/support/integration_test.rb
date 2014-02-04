@@ -4,6 +4,7 @@ module Tapicero
     def create_user
       result = database.save_doc :some => :content
       raise RuntimeError.new(result.inspect) unless result['ok']
+      sleep 1 # allow tapicero to do its job
       @user_id = result['id']
     end
 
