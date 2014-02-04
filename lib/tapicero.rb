@@ -24,12 +24,4 @@ module Tapicero
     puts "flags: #{FLAGS}" if FLAGS.any?
   end
 
-  #
-  # Load Tapicero Parts
-  #
-  require 'tapicero/user_database'
-
-  def self.user_database(id)
-    UserDatabase.new(id)
-  end
 end
