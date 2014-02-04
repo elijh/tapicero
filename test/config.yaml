@@ -9,11 +9,11 @@ connection:
   port: 5984
   username: anna
   password: secret
-  prefix: "tapicero-test"
+  prefix: "tapicero_test"
   suffix: ""
 
 # file to store the last processed user record in so we can resume after
 # a restart:
-seq_file: "/tmp/test-tapicero.seq"
-log_file: "/tmp/test-tapicero.log"
+seq_file: "/tmp/tapicero_test.seq"
+log_file: "/tmp/tapicero_test.log"
 log_level: debug

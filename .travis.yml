@@ -6,10 +6,10 @@ notifications:
   email: false
 before_script:
   - "/bin/bash test/setup_couch.sh"
-  - "touch /tmp/test-tapicero.log"
+  - "touch /tmp/tapicero_test.log"
   - "bundle exec bin/tapicero start test/config.yaml"
   - "bundle exec bin/tapicero status"
-  - "cat /tmp/test-tapicero.log"
+  - "cat /tmp/tapicero_test.log"
 after_script:
-  - "cat /tmp/test-tapicero.log"
-  - "cat /tmp/test-tapicero.seq"
+  - "cat /tmp/tapicero_test.log"
+  - "cat /tmp/tapicero_test.seq"
