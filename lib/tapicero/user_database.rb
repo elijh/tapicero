@@ -8,13 +8,6 @@ module Tapicero
       @db = couch.database(config.options[:db_prefix] + user_id)
     end
 
-    def prepare
-      create
-      secure
-      add_design_docs
-      Tapicero.logger.info "Prepared storage " + db.name
-    end
-
     def create
       retry_request_once "Creating database" do
         create_db
@@ -51,6 +44,10 @@ module Tapicero
       retry_request_once "Deleting database" do
         delete_db
       end
+    end
+
+    def name
+      db.name
     end
 
     protected

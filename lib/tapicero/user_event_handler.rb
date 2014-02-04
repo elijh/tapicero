@@ -3,8 +3,7 @@ module Tapicero
   class UserEventHandler
     def initialize(users)
       users.created do |hash|
-        logger.debug "Created user " + hash['id']
-        user_database(hash['id']).prepare
+        prepare_db(hash['id'])
       end
 
       # Sometimes changes log starts with rev 2. So the
@@ -12,14 +11,24 @@ module Tapicero
       # Working around this until a new version of
       # couchrest changes takes this into account.
       users.updated do |hash|
-        logger.debug "Updated user " + hash['id']
-        user_database(hash['id']).prepare
+        prepare_db(hash['id'])
       end
 
       users.deleted do |hash|
-        logger.debug "Deleted user " + hash['id']
-        user_database(hash['id']).destroy
+        destroy_db(hash['id'])
       end
+    end
+
+    def prepare_db(id)
+      db = user_database(id)
+      db.create
+      db.secure
+      db.add_design_docs
+      logger.info "Prepared storage " + db.name
+    end
+
+    def destroy_db(id)
+      user_database(id).destroy
     end
 
     def logger
