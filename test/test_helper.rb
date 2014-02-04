@@ -6,5 +6,9 @@ $:.unshift File.expand_path('lib', BASE_DIR)
 
 require 'mocha/setup'
 
-TAPICERO_CONFIG = "test/config/config.yaml"
+require 'tapicero/version'
+Tapicero::CONFIGS << "test/config.yaml"
 require 'tapicero'
+
+
+require_relative 'support/integration_test'

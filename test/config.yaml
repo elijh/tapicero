@@ -1,0 +1,19 @@
+#
+# Default configuration options for Tapicero
+#
+
+# couch connection configuration
+connection:
+  protocol: "http"
+  host: "localhost"
+  port: 5984
+  username: anna
+  password: secret
+  prefix: "tapicero_test"
+  suffix: ""
+
+# file to store the last processed user record in so we can resume after
+# a restart:
+seq_file: "/tmp/tapicero_test.seq"
+log_file: "/tmp/tapicero_test.log"
+log_level: debug

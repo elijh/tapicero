@@ -1,9 +1,6 @@
 unless defined? BASE_DIR
   BASE_DIR = Pathname.new(__FILE__) + '../..'
 end
-unless defined? TAPICERO_CONFIG
-  TAPICERO_CONFIG = '/etc/leap/tapicero.yaml'
-end
 
 module Tapicero
   class <<self
@@ -18,13 +15,14 @@ module Tapicero
   # defined before the models are defined.
   #
   require 'couchrest/changes'
-  configs = ['config/default.yaml', TAPICERO_CONFIG, ARGV.grep(/\.ya?ml$/).first]
-  self.config = CouchRest::Changes::Config.load(BASE_DIR, *configs)
+  self.config = CouchRest::Changes::Config.load(BASE_DIR, *CONFIGS)
   self.logger = CouchRest::Changes::Config.logger
 
   # hand flags over to CouchRest::Changes
-  config.flags = FLAGS
-  puts "flags: #{FLAGS}" if FLAGS.any?
+  if defined? FLAGS
+    config.flags = FLAGS
+    puts "flags: #{FLAGS}" if FLAGS.any?
+  end
 
   #
   # Load Tapicero Parts
