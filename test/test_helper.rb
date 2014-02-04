@@ -9,3 +9,6 @@ require 'mocha/setup'
 require 'tapicero/version'
 Tapicero::CONFIGS << "test/config.yaml"
 require 'tapicero'
+
+
+require_relative 'support/integration_test'
