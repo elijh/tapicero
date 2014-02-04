@@ -35,8 +35,9 @@ module Tapicero
     end
 
     def upload_design_doc(file)
+      old = CouchRest.get design_url(file.basename('.json'))
+    rescue RestClient::ResourceNotFound
       CouchRest.put design_url(file.basename('.json')), JSON.parse(file.read)
-    rescue RestClient::Conflict
     end
 
 
@@ -53,7 +54,9 @@ module Tapicero
     protected
 
     def create_db
-      db.create! || db.info
+      db.info # test if db exists
+    rescue RestClient::ResourceNotFound
+      couch.create_db(db.name)
     end
 
     def delete_db
@@ -66,6 +69,7 @@ module Tapicero
       Tapicero.logger.debug "#{action} #{db.name}"
       yield
     rescue RestClient::Exception => exc
+      raise exc if Tapicero::RERAISE
       if second_try
         log_error "#{action} #{db.name} failed twice due to:", exc
       else

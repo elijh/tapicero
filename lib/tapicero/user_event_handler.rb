@@ -19,6 +19,8 @@ module Tapicero
       end
     end
 
+    protected
+
     def prepare_db(id)
       db = user_database(id)
       db.create

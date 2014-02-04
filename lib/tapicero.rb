@@ -8,7 +8,11 @@ module Tapicero
     attr_accessor :config
   end
 
-
+  # reraise exceptions instead of retrying
+  # used in tests
+  unless defined? RERAISE
+    RERAISE = false
+  end
   #
   # Load Config
   # this must come first, because CouchRest needs the connection

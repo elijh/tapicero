@@ -1,13 +1,18 @@
 require 'rubygems'
 require 'minitest/autorun'
+require 'pathname'
 
-BASE_DIR = File.expand_path('../..', __FILE__)
-$:.unshift File.expand_path('lib', BASE_DIR)
+unless defined? BASE_DIR
+  BASE_DIR = Pathname.new(__FILE__) + '../..'
+end
+
+$:.unshift BASE_DIR + 'lib'
 
 require 'mocha/setup'
 
 require 'tapicero/version'
 Tapicero::CONFIGS << "test/config.yaml"
+Tapicero::RERAISE = true
 require 'tapicero'
 
 
