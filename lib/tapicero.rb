@@ -30,6 +30,6 @@ module Tapicero
   require 'tapicero/user_database'
 
   def self.user_database(id)
-    UserDatabase.new(config.couch_host, config.options[:db_prefix] + id)
+    UserDatabase.new(id)
   end
 end

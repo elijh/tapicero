@@ -12,7 +12,7 @@ module Tapicero
 
   users.created do |hash|
     logger.debug "Created user " + hash['id']
-    user_database(hash['id']).prepare(config)
+    user_database(hash['id']).prepare
   end
 
   # Sometimes changes log starts with rev 2. So the
@@ -21,7 +21,7 @@ module Tapicero
   # couchrest changes takes this into account.
   users.updated do |hash|
     logger.debug "Updated user " + hash['id']
-    user_database(hash['id']).prepare(config)
+    user_database(hash['id']).prepare
   end
 
   users.deleted do |hash|
