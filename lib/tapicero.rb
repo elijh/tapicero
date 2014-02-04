@@ -23,8 +23,10 @@ module Tapicero
   self.logger = CouchRest::Changes::Config.logger
 
   # hand flags over to CouchRest::Changes
-  config.flags = FLAGS
-  puts "flags: #{FLAGS}" if FLAGS.any?
+  if defined? FLAGS
+    config.flags = FLAGS
+    puts "flags: #{FLAGS}" if FLAGS.any?
+  end
 
   #
   # Load Tapicero Parts
