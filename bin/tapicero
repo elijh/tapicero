@@ -46,7 +46,8 @@ end
 # --overwrite-security  overwrite existing couch security settings
 # TODO: not implemented yet:
 # --overwrite-designs   overwrite existing design documents
-Tapicero::FLAGS.concat ARGV.grep(/--.*/)
+Tapicero::FLAGS.concat   ARGV.grep(/--.*/)
+Tapicero::CONFIGS.concat ARGV.grep(/\.ya?ml$/)
 
 # if flags have been set but an action is missing we assume
 # tapicero should run in foreground.
