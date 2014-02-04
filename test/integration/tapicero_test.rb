@@ -9,6 +9,7 @@ class TapiceroTest < MiniTest::Unit::TestCase
 
   def test_database_exists
     assert database
+    assert_equal "tapicero_test_users", database.name
   end
 
   def test_creates_user_db_fast
