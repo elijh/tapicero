@@ -71,9 +71,9 @@ module Tapicero
     rescue RestClient::Exception => exc
       raise exc if Tapicero::RERAISE
       if second_try
-        log_error "#{action} #{db.name} failed twice due to:", exc
+        log_error "#{action} #{db.name} failed twice due to: ", exc
       else
-        log_error "#{action} #{db.name} failed due to:", exc
+        log_error "#{action} #{db.name} failed due to: ", exc
         sleep 5
         second_try = true
         retry
@@ -81,8 +81,8 @@ module Tapicero
     end
 
     def log_error(message, exc)
-      Tapicero.logger.warn message if message
-      Tapicero.logger.warn exc.class.name + ': ' + exc.to_s
+      # warn message is a one liner so nagios can parse it
+      Tapicero.logger.warn message.to_s + exc.class.name + ': ' + exc.to_s
       Tapicero.logger.debug exc.backtrace.join("\n")
     end
 
