@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    tapicero (0.3.2)
+    tapicero (0.4.0)
       couchrest (~> 1.1.3)
       couchrest_changes (~> 0.0.5)
       daemons
@@ -26,7 +26,7 @@ GEM
     minitest (3.2.0)
     mocha (0.14.0)
       metaclass (~> 0.0.1)
-    multi_json (1.8.2)
+    multi_json (1.8.4)
     rake (10.1.0)
     rest-client (1.6.7)
       mime-types (>= 1.16)
