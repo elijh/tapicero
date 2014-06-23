@@ -24,6 +24,16 @@ module Tapicero
       end
     end
 
+    def replicate()
+      return unless config.options[:mode] == 'mirror'
+      replication = config.options[:replication]
+      replication[:masters].each do |key, node|
+        retry_request_once "Replicating" do
+          Replication.new(source, name).run continuous: true
+        end
+      end
+    end
+
     def add_design_docs
       pattern = BASE_DIR + 'designs' + '*.json'
       Tapicero.logger.debug "Looking for design docs in #{pattern}"

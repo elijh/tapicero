@@ -26,6 +26,7 @@ module Tapicero
       db.create
       db.secure
       db.add_design_docs
+      db.replicate
       logger.info "Prepared storage " + db.name
     end
 

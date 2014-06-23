@@ -61,11 +61,10 @@ end
 # Start the daemon
 #
 require 'daemons'
-if ENV["USER"] == "root"
-  options = {:app_name => 'tapicero', :dir_mode => :system}  # this will put the pid file in /var/run
-else
-  options = {:app_name => 'tapicero', :dir_mode => :normal, :dir => '/tmp'} # this will put the pid file in /tmp
-end
+
+# this will put the pid file in /var/run
+options = {:app_name => 'tapicero', :dir_mode => :system}  
+
 begin
   Daemons.run("#{BASE_DIR}/lib/tapicero_daemon.rb", options)
 rescue SystemExit
