@@ -13,11 +13,12 @@ module Tapicero
     RemoteEndpoint = Struct.new(:remote, :credentials) do
       def key;        domain; end
       def url;       "http://#{creds}@#{domain}:#{port}/#{name}"; end
-      def save_url;  "http://...@#{domain}:#{port}/#{name}"; end
+      def save_url;  "http://#{username}@#{domain}:#{port}/#{name}"; end
       def domain;    remote[:internal_domain]; end
       def port;      remote[:couch_port]; end
       def name;      remote[:name]; end
-      def creds;     credentials[:username] + ':' + credentials[:password]; end
+      def creds;     username + ':' + credentials[:password]; end
+      def username;  credentials[:username]; end
     end
 
     def initialize(source, target)
