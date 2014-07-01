@@ -4,6 +4,8 @@ require 'json'
 module Tapicero
   class Replication
 
+    attr_reader :source, :target
+
     LocalEndpoint = Struct.new(:name) do
       def key; name; end
       def url; name; end
@@ -14,11 +16,11 @@ module Tapicero
       def key;        domain; end
       def url;       "http://#{creds}@#{domain}:#{port}/#{name}"; end
       def save_url;  "http://#{username}@#{domain}:#{port}/#{name}"; end
-      def domain;    remote[:internal_domain]; end
-      def port;      remote[:couch_port]; end
-      def name;      remote[:name]; end
-      def creds;     username + ':' + credentials[:password]; end
-      def username;  credentials[:username]; end
+      def domain;    remote["domain_internal"]; end
+      def port;      remote["couch_port"]; end
+      def name;      remote["name"]; end
+      def creds;     username + ':' + credentials["password"]; end
+      def username;  credentials["username"]; end
     end
 
     def initialize(source, target)
@@ -27,18 +29,18 @@ module Tapicero
     end
 
     def run(options)
-      Tapicero.logger.debug "Replicating from #{source.save_url} to #{target.save_url}."
+      Tapicero.logger.info "Replicating from #{source.save_url} to #{target.save_url}."
       replication_db.save_doc replication_doc.merge(options)
     end
 
     def replication_doc
       {
-        _id: "#{source.key}_to_#{target.key}"
-        source: source.url,
-        target: target.url,
-        user_ctx: {
-          name: replication_credentials[:username],
-          roles: [replication_credentials[:role]]
+        "_id"      => source.domain.gsub('.', '_'),
+        "source"   => source.url,
+        "target"   => target.url,
+        "user_ctx" => {
+          name: replication_credentials["username"],
+          roles: [replication_credentials["role"]]
         }
       }
     end
@@ -46,13 +48,15 @@ module Tapicero
     protected
 
     def endpoint_for(hash_or_string)
-      hash_or_string.respond_to? :[] ?
+      hash_or_string.respond_to?(:keys) ?
         RemoteEndpoint.new(hash_or_string, replication_credentials) :
         LocalEndpoint.new(hash_or_string)
     end
 
     def replication_credentials
-      config.options[:replication].slice(:username, :password, :role)
+      config.options[:replication].select do |k,v|
+        %w/username password role/.include? k
+      end
     end
 
     def replication_db
@@ -67,4 +71,5 @@ module Tapicero
       Tapicero.config
     end
 
+  end
 end

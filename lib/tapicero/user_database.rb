@@ -1,5 +1,6 @@
 require 'couchrest'
 require 'json'
+require 'tapicero/replication'
 
 module Tapicero
   class UserDatabase
@@ -27,9 +28,10 @@ module Tapicero
     def replicate()
       return unless config.options[:mode] == 'mirror'
       replication = config.options[:replication]
-      replication[:masters].each do |key, node|
+      replication["masters"].each do |key, node|
+        node["name"] = name
         retry_request_once "Replicating" do
-          Replication.new(source, name).run continuous: true
+          Tapicero::Replication.new(node, name).run continuous: true
         end
       end
     end
