@@ -51,7 +51,7 @@ Tapicero::CONFIGS.concat ARGV.grep(/\.ya?ml$/)
 
 # if flags have been set but an action is missing we assume
 # tapicero should run in foreground.
-if ARGV.first && ARGV.first.start_with?('--')
+if ARGV.first.start_with?('--')
   ARGV.unshift '--'
   ARGV.unshift 'run'
 end
@@ -61,10 +61,11 @@ end
 # Start the daemon
 #
 require 'daemons'
-
-# this will put the pid file in /var/run
-options = {:app_name => 'tapicero', :dir_mode => :system}  
-
+if ENV["USER"] == "root"
+  options = {:app_name => 'tapicero', :dir_mode => :system}  # this will put the pid file in /var/run
+else
+  options = {:app_name => 'tapicero', :dir_mode => :normal, :dir => '/tmp'} # this will put the pid file in /tmp
+end
 begin
   Daemons.run("#{BASE_DIR}/lib/tapicero_daemon.rb", options)
 rescue SystemExit
