@@ -5,6 +5,7 @@
 #  Daemons.run('tapicero_daemon.rb')
 #
 require 'tapicero'
+require 'extends/couchrest'
 
 module Tapicero
   module Daemon
