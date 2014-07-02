@@ -11,5 +11,6 @@ before_script:
   - "bundle exec bin/tapicero status"
   - "cat /tmp/tapicero_test.log"
 after_script:
+  - "bundle exec bin/tapicero stop"
   - "cat /tmp/tapicero_test.log"
   - "cat /tmp/tapicero_test.seq"
