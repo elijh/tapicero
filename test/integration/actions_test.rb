@@ -1,6 +1,6 @@
 require_relative '../test_helper.rb'
 
-class TapiceroTest < Tapicero::IntegrationTest
+class ActionsTest < Tapicero::IntegrationTest
 
   def setup
     create_user
