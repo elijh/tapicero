@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
   s.executables << 'tapicero'
 
   s.add_dependency "couchrest", "~> 1.1.3"
-  s.add_dependency "couchrest_changes", "~> 0.1.0"
+  s.add_dependency "couchrest_changes", "~> 0.1.1"
   s.add_dependency "daemons"
   s.add_dependency "yajl-ruby", "~> 1.1.0"
   s.add_dependency "syslog_logger", "~> 2.0.0"
