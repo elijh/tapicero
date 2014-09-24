@@ -1,9 +1,9 @@
 PATH
   remote: .
   specs:
-    tapicero (0.4.0)
+    tapicero (0.4.1)
       couchrest (~> 1.1.3)
-      couchrest_changes (~> 0.1.0)
+      couchrest_changes (~> 0.1.1)
       daemons
       syslog_logger (~> 2.0.0)
       yajl-ruby (~> 1.1.0)
@@ -15,12 +15,13 @@ GEM
       mime-types (~> 1.15)
       multi_json (~> 1.0)
       rest-client (~> 1.6.1)
-    couchrest_changes (0.1.0)
+    couchrest_changes (0.1.1)
       couchrest (~> 1.1.3)
       syslog_logger (~> 2.0.0)
       yajl-ruby
     daemons (1.1.9)
     highline (1.6.19)
+    json (1.8.1)
     metaclass (0.0.1)
     mime-types (1.25.1)
     minitest (3.2.0)
@@ -28,8 +29,11 @@ GEM
       metaclass (~> 0.0.1)
     multi_json (1.10.1)
     rake (10.1.0)
-    rest-client (1.6.7)
-      mime-types (>= 1.16)
+    rdoc (4.1.2)
+      json (~> 1.4)
+    rest-client (1.6.8)
+      mime-types (~> 1.16)
+      rdoc (>= 2.4.2)
     syslog_logger (2.0.1)
     yajl-ruby (1.1.0)
 
