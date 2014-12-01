@@ -49,7 +49,10 @@ module Tapicero
     def upload_design_doc(file)
       old = CouchRest.get design_url(file.basename('.json'))
     rescue RestClient::ResourceNotFound
-      CouchRest.put design_url(file.basename('.json')), JSON.parse(file.read)
+      begin
+        CouchRest.put design_url(file.basename('.json')), JSON.parse(file.read)
+      rescue RestClient::Conflict
+      end
     end
 
 
@@ -65,10 +68,23 @@ module Tapicero
 
     protected
 
+    #
+    # Sometimes attempting to create the db will fail with PreconditionFailed.
+    # This error is supposed to be returned only when the db already exists.
+    # However, sometimes the db will be created and PreconditionFailed will
+    # be returned.
+    #
+    # Might throw one of the following exceptions:
+    # * RestClient::BadRequest
+    # * RestClient::Unauthorized
+    #
     def create_db
       db.info # test if db exists
     rescue RestClient::ResourceNotFound
-      couch.create_db(db.name)
+      begin
+        couch.create_db(db.name)
+      rescue RestClient::PreconditionFailed
+      end
     end
 
     def delete_db
@@ -85,7 +101,7 @@ module Tapicero
       if second_try
         log_error "#{action} #{db.name} failed twice due to: ", exc
       else
-        log_error "#{action} #{db.name} failed due to: ", exc
+        log_info "#{action} #{db.name} failed (trying again soon): ", exc
         sleep 5
         second_try = true
         retry
@@ -96,6 +112,10 @@ module Tapicero
       # warn message is a one liner so nagios can parse it
       Tapicero.logger.warn message.to_s + exc.class.name + ': ' + exc.to_s
       Tapicero.logger.debug exc.backtrace.join("\n")
+    end
+
+    def log_info(message, exc)
+      Tapicero.logger.info message.to_s + exc.class.name + ': ' + exc.to_s
     end
 
     def secured?
