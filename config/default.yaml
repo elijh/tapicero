@@ -17,7 +17,7 @@ connection:
 seq_file: "/var/log/leap/tapicero.seq"
 
 # Configure log_file like this if you want to log to a file instead of syslog:
-# log_file: "/var/leap/log/tapicero.log"
+# log_file: "/var/log/leap/tapicero.log"
 log_level: debug
 
 # tapicero specific options
@@ -31,7 +31,6 @@ options:
       names: []
       roles: []
     members:
-      names: 
+      names:
         - soledad
       roles: []
-
