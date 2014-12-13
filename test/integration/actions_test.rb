@@ -3,6 +3,7 @@ require_relative '../test_helper.rb'
 class ActionsTest < Tapicero::IntegrationTest
 
   def setup
+    assert_tapicero_running
     create_user
   end
 
@@ -11,9 +12,8 @@ class ActionsTest < Tapicero::IntegrationTest
   end
 
   def test_creates_user_db
-    assert user_database
+    assert_database_exists user_database
     assert user_database.name.start_with?(config.options[:db_prefix])
-    assert user_database.info # ensure db exists in couch.
   end
 
   def test_configures_security
@@ -25,10 +25,10 @@ class ActionsTest < Tapicero::IntegrationTest
       design_docs(user_database).map{|doc| doc["id"]}.sort
   end
 
-  def test_cleares_user_db
-    assert user_database.info # ensure db exists in couch.
+  def test_deletes_user_db
+    assert_database_exists user_database
     delete_user
-    assert !host.databases.include?(user_database.name)
+    assert !host.databases.include?(user_database.name), 'user db must not exist'
   end
 
   def design_docs(db)

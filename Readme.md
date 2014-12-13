@@ -51,6 +51,14 @@ Run once and then exit:
     This will create per user databases for all users created since
     the last run and then exit.
 
+Running tests
+---------------------
+
+To run the tests, tapicero must be running:
+
+    bin/tapicero run -- test/config.yaml
+    rake test
+
 Flags
 ---------------------
 
@@ -77,7 +85,7 @@ Configuration
 
 For development on a couch with admin party you can probably leave all other options at their default values. For production you will need to set the credentials to an admin user so tapicero can create databases.
 
-The default options and some explaination can be found in config/defaults.yaml
+The default options and some explanation can be found in `config/default.yaml`.
 
 Rake Tasks
 ----------------------------
@@ -95,4 +103,3 @@ For development and debugging you might want to run the programm directly withou
 the deamon wrapper. You can do this like this:
 
     ruby -I lib lib/tapicero.rb
-

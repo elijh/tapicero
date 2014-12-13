@@ -7,8 +7,8 @@ connection:
   protocol: "http"
   host: "localhost"
   port: 5984
-  username: anna
-  password: secret
+  username: ~
+  password: ~
   prefix: "tapicero_test"
   suffix: ""
 
