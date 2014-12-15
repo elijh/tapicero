@@ -33,3 +33,6 @@ MiniTest.after_run {
   TapiceroProcess.kill!
 }
 
+puts
+puts "   REMINDER: check /tmp/tapicero.log for errors"
+puts

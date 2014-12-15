@@ -9,19 +9,32 @@ module Tapicero
       @db = couch.database(config.options[:db_prefix] + user_id)
     end
 
+    #
+    # Create the user db, and keep trying until successful.
+    #
     def create
-      retry_request_once "Creating database" do
-        create_db
+      retry_until "creating database", method(:exists?) do
+        begin
+          couch.create_db(db.name)
+        rescue RestClient::PreconditionFailed
+          # silently eat preconditionfailed, since it might be bogus.
+          # we will keep trying until db actually exists.
+        end
       end
     end
 
+    #
+    # upload security document
+    #
     def secure(security = nil)
       security ||= config.options[:security]
       # let's not overwrite if we have a security doc already
       return if secured? && !Tapicero::FLAGS.include?('--overwrite-security')
       retry_request_once "Writing security to" do
-        Tapicero.logger.debug security.to_json
-        CouchRest.put security_url, security
+        ignore_conflicts do
+          Tapicero.logger.debug security.to_json
+          CouchRest.put security_url, security
+        end
       end
     end
 
@@ -49,16 +62,16 @@ module Tapicero
     def upload_design_doc(file)
       old = CouchRest.get design_url(file.basename('.json'))
     rescue RestClient::ResourceNotFound
-      begin
+      ignore_conflicts do
         CouchRest.put design_url(file.basename('.json')), JSON.parse(file.read)
-      rescue RestClient::Conflict
       end
     end
 
-
     def destroy
       retry_request_once "Deleting database" do
-        delete_db
+        ignore_not_found do
+          db.delete! if db
+        end
       end
     end
 
@@ -66,32 +79,11 @@ module Tapicero
       db.name
     end
 
-    protected
+    private
 
     #
-    # Sometimes attempting to create the db will fail with PreconditionFailed.
-    # This error is supposed to be returned only when the db already exists.
-    # However, sometimes the db will be created and PreconditionFailed will
-    # be returned.
+    # If at first you don't succeed, try one more time.
     #
-    # Might throw one of the following exceptions:
-    # * RestClient::BadRequest
-    # * RestClient::Unauthorized
-    #
-    def create_db
-      db.info # test if db exists
-    rescue RestClient::ResourceNotFound
-      begin
-        couch.create_db(db.name)
-      rescue RestClient::PreconditionFailed
-      end
-    end
-
-    def delete_db
-      db.delete! if db
-    rescue RestClient::ResourceNotFound  # no database found
-    end
-
     def retry_request_once(action)
       second_try ||= false
       Tapicero.logger.debug "#{action} #{db.name}"
@@ -105,6 +97,55 @@ module Tapicero
         sleep 5
         second_try = true
         retry
+      end
+    end
+
+    #
+    # most of the time, we can safely ignore conflicts. It just
+    # means that another tapicero daemon beat us to the punch.
+    #
+    def ignore_conflicts
+      yield
+    rescue RestClient::Conflict => exc
+      raise exc if Tapicero::RERAISE
+    end
+
+    def ignore_not_found
+      yield
+    rescue RestClient::ResourceNotFound
+    end
+
+    #
+    # captures and logs any uncaught rest client Exceptions
+    #
+    def log_rest_client_errors(msg)
+      yield
+    rescue RestClient::Exception => exc
+      raise exc if Tapicero::RERAISE
+      log_error "#{msg} #{db.name} failed due to: ", exc
+    end
+
+    #
+    # keeps trying block until method returns true.
+    # gives up after 100 tries
+    #
+    def retry_until(msg, method)
+      tries = 0
+      while(true)
+        tries += 1
+        if tries > 100
+          Tapicero.logger.error "Gave up: #{msg}"
+          break
+        else
+          log_rest_client_errors msg do
+            yield
+          end
+        end
+        if method.call()
+          break
+        else
+          sleep 1
+        end
       end
     end
 
@@ -122,6 +163,13 @@ module Tapicero
       retry_request_once "Checking security of" do
         CouchRest.get(security_url).keys.any?
       end
+    end
+
+    def exists?
+      db.info
+      return true
+    rescue RestClient::ResourceNotFound
+      return false
     end
 
     def security_url

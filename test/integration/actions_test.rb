@@ -5,6 +5,7 @@ class ActionsTest < Tapicero::IntegrationTest
   def setup
     TapiceroProcess.run_with_config("test/config.yaml")
     create_user
+    sleep 0.1
   end
 
   def teardown

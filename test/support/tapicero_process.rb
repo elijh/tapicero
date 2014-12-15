@@ -24,7 +24,7 @@ module TapiceroProcess
           puts "bin/tapicero run -- '#{config_path}'"
           exec "bin/tapicero run -- '#{config_path}'"
         else
-          exec "bin/tapicero run -- '#{config_path}' > /dev/null 2>&1"
+          exec "bin/tapicero run -- '#{config_path}' > /dev/null | grep -v ^tapicero:"
         end
       end
       Process.detach(other_process)
