@@ -25,7 +25,6 @@ module Tapicero
   # hand flags over to CouchRest::Changes
   if defined? FLAGS
     config.flags = FLAGS
-    puts "flags: #{FLAGS}" if FLAGS.any?
   end
 
 end

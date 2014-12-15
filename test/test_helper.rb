@@ -12,6 +12,10 @@ begin
 rescue LoadError
 end
 
+unless defined? DEBUG
+  DEBUG = ENV["DEBUG"]
+end
+
 $:.unshift BASE_DIR + 'lib'
 
 require 'mocha/setup'
@@ -22,3 +26,10 @@ Tapicero::RERAISE = true
 require 'tapicero'
 
 require_relative 'support/integration_test'
+
+require_relative 'support/tapicero_process'
+TapiceroProcess.kill!
+MiniTest.after_run {
+  TapiceroProcess.kill!
+}
+

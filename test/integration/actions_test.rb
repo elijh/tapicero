@@ -3,7 +3,7 @@ require_relative '../test_helper.rb'
 class ActionsTest < Tapicero::IntegrationTest
 
   def setup
-    assert_tapicero_running
+    TapiceroProcess.run_with_config("test/config.yaml")
     create_user
   end
 

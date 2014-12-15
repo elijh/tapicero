@@ -54,10 +54,13 @@ Run once and then exit:
 Running tests
 ---------------------
 
-To run the tests, tapicero must be running:
+To run the tests:
 
-    bin/tapicero run -- test/config.yaml
-    rake test
+    rake
+
+You can run with `rake DEBUG=1` if you want more verbose output. To run a particular test:
+
+    DEBUG=1 ruby test/integration/failure_test.rb
 
 Flags
 ---------------------

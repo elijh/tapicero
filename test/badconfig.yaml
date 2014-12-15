@@ -1,12 +1,13 @@
 #
-# Default configuration options for Tapicero tests
+# A bad config, used to test errors
 #
 
-# couch connection configuration
+# couch connection configurationq
 connection:
   protocol: "http"
   host: "localhost"
-  port: 5984
+  port: 59840
+  ## ^^ wrong port :)
   username: ~
   password: ~
   prefix: "tapicero_test"

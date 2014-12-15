@@ -7,6 +7,13 @@
 require 'pathname'
 BASE_DIR = Pathname.new(__FILE__).realpath + '../..'
 
+def error(msg)
+  if Tapicero.respond_to?(:logger) && Tapicero.logger
+    Tapicero.logger.error(msg)
+  end
+  puts(msg)
+end
+
 begin
   #
   # try without rubygems (might be already loaded or not present)
@@ -27,9 +34,8 @@ end
 
 # Graceful Ctrl-C
 Signal.trap("SIGINT") do
-  Tapicero.logger.warn "Received SIGINT - stopping tapicero"
-  puts "\nQuit - leaving tapicero"
-  exit
+  error "Received SIGINT - stopping tapicero"
+  exit(0)
 end
 
 # this changes later, so save the initial current directory
@@ -69,7 +75,8 @@ end
 begin
   Daemons.run("#{BASE_DIR}/lib/tapicero_daemon.rb", options)
 rescue SystemExit
-rescue Exception => exc
-  puts exc.class.name + exc.to_s
-  puts exc.backtrace.join("\n")
+  error "Bye"
+rescue StandardError => exc
+  error exc.class.name + " " + exc.to_s
+  error exc.backtrace.join("\n")
 end
